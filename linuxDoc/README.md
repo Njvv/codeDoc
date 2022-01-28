@@ -1,0 +1,2 @@
+# codeDoc
+ doc of linux
