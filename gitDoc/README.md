@@ -1,2 +1,2 @@
-# codeDoc
+# Git
  doc of git

@@ -1,2 +1,2 @@
-# codeDoc
+# Java
  doc of java
