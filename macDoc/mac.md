@@ -54,6 +54,12 @@ source ~/.zprofile
 
 调整字体为：MesloLGS；
 
+### 下载oh-my-zsh
+
+```bash
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
 ### 下载powerlevel10k
 
 ```bash
