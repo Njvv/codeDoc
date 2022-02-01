@@ -4,7 +4,7 @@
 
 ### 下载字体
 
-推荐下载[`MesloLGS`](https://github.com/romkatv/powerlevel10k#manual-font-installation)字体；
+推荐下载[`MesloLGS`](https://github.com/romkatv/powerlevel10k#manual-font-installation)字体，进入链接后依次下载四个字体；
 
 不推荐`powerline`字体，会有乱码；
 
