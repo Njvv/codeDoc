@@ -132,6 +132,10 @@ git clone git://***.git
 git clone user@server:path/to/repo.git
 ```
 
+
+
+## 使用Git
+
 ### 检查文件状态
 
 ```bash
@@ -185,4 +189,101 @@ $ git status -s
 ```
 
 左侧表示暂存区，右侧表示工作区，`A`表示新添加到暂存区域，`？？`表示新添加的未跟踪文件，`M`表示修改过，`MM`表示文件在暂存区后又被进行了修改；
+
+### 忽略文件
+
+通过管理`.gitignore`文件，可以让指定文件不受git控制；
+
+- 可以使用标准的glob模式匹配，他会递归的应用在整个工作区；
+- 匹配模式可以以`\`开头，防止递归；
+- 匹配模式可以以`\`结尾，指定目录；
+- 要忽略指定模式以外的文件或目录，可以在模式前加上`!`;
+
+### 提交更新
+
+提交更新至暂存区
+
+```bash
+git commit -m 'msg'
+```
+
+跳过暂存直接提交更新
+
+```bash
+git commit -a -m 'msg'
+```
+
+### 移除文件
+
+从Git中移除文件，就必须要从跟踪文件清单`暂存区`中移除；
+
+```bash
+git rm file/path
+```
+
+强制删除已经处于暂存区或者之前已经修改过的文件，需要增加`-f`;
+
+```bash
+git rm -f file/path
+```
+
+仅删除版本管理，而不从本地磁盘删除，需要增加`--cached`;
+
+```bash
+git rm --cached file/path
+```
+
+删除文件支持glob模式匹配，但是对于通配符号需要注意加入`\`；
+
+### 移动文件
+
+Git不跟踪文件的移动、重命名；
+
+可以通过以下命令进行移动
+
+```bash
+git mv file_from file_to
+
+# 等效于
+mv file_from file_to
+git rm file from
+git add file_to
+
+```
+
+### 查看历史
+
+可以通过以下命令查看提交历史；
+
+```bash
+git log
+```
+
+### 撤销操作
+
+在git中有些操作是不可逆的，以下说明部分撤回操作；
+
+> 替换提交
+
+```bash
+git add file
+git commit -m 'msg'
+
+# 修改操作
+
+git add file
+git commit --amend -m 'msg'  # 此时该提交会替代第一次提交 
+```
+
+> 取消暂存
+
+```bash
+git reset HEAD file # 取消对于file的暂存
+```
+
+> 撤销修改
+
+```bash
+git checkout -- file # 还原至上一次提交的样子（有风险）
+```
 
