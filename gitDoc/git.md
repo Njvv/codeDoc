@@ -469,3 +469,110 @@ git config --global alias.<new_name> '<git_command>'
 
 ## Git分支
 
+### 分支简介
+
+当使用`git commit`的时候，git会先计算每一个子目录的校验和（sha-1），然后在git仓库中将这些校验和保存为树对象。随后git会创建一个提交对象，它除了包含上述对象外，还包含指向这个树目录的指针。
+
+现在git仓库中就有了以下几个对象：n个`blob`对象（保存着文件快照），一个树对象（记录着目录结构和blob对象索引）以及一个提交对象（包含着指向前述对象的指针和所有者提交信息）；
+
+Git分支本质是指向提交对象的可变指；
+
+Git 的默认分支名字是master。 在多次提交操作之后，你其实已经有一个指向最后那个提交对象的 master 分支。 master 分支会在每次提交时自动向前移动；
+
+Git的master分支并不是一个特殊分支，只是`git init`命令默认创建的了他，并且大多数人都懒得去改动他；
+
+### 分支创建
+
+可以通过如下命令创建分支
+
+```bash
+git branch <new_branch_name>
+```
+
+这会在当前提交对象上创建一个指针，然后git通过`HEAD`的特殊指针来识别当前处于什么分支；
+
+> 创建分支后，并不会切换到新的分支上，需要手动切换分支
+
+可以通过如下命令查看各分支当前处于的对象
+
+```bash
+git log --oneline --decorate
+```
+
+### 分支切换
+
+可以通过如下命令进行分支切换
+
+```bash
+git checkout <branch_name>
+```
+
+### 分支的新建与合并
+
+通过如下命令新建一个分支，并切换至对应分支
+
+```bash
+git checkout -b <new_branch_name>
+```
+
+以下列出一个工作场景流
+
+- 新建issue分支
+
+  ```bash
+  git checkout -b issue
+  ```
+
+  基于issue分支进行修改
+
+- 新建hotfix分支
+
+  ```bash
+  git checkout master
+  git checkout -b hotfix
+  ```
+
+  基于hotfix分支进行修改
+
+- 合并hotfix分支
+
+  ```bash
+  git checkout master
+  git merge hotfix # fast-forward 合并（不产生新的节点，而是完全的融合）
+  ```
+
+- 删除hotfix分支
+
+  ```bash
+  git branch -d hotfix
+  ```
+
+- 继续issue分支开发
+
+  ```bash
+  git checkout issue
+  ```
+
+- 合并issue分支
+
+  ```bash
+  git checkout master
+  git merge issue
+  git branch -d issue
+  ```
+
+  在合并issue分支的时候，如果master分支和isuue分支对于同一个文件产生了不同的修改，那么就会产生冲突；
+
+  需要手动去解决冲突；
+
+  可以通过如下命令查看冲突文件
+
+  ```bash
+  git status
+  ```
+
+  在手动解决完冲突之后，可以通过对每一个文件使用`git add`来标记冲突已经解决。一旦暂存这些原本有冲突的文件，git就会将他们标记为冲突已解决；
+
+  > 可视化冲突解决
+  >
+  > 可以使用`git mergetool`启动一个可视化的界面来引导一步步解决冲突；
