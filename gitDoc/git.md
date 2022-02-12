@@ -576,3 +576,139 @@ git checkout -b <new_branch_name>
   > 可视化冲突解决
   >
   > 可以使用`git mergetool`启动一个可视化的界面来引导一步步解决冲突；
+
+  解决完冲突后，可以执行`git commit`
+
+### 分支管理
+
+通过以下命令查看当前的所有分支
+
+```bash
+git branch
+# *branch_name 代表现在检出的那一个分支
+```
+
+通过以下命令，查看已经合并、没有合并到当前分支的分支
+
+```bash
+git branch --merged
+# branch_name 前面没有*的分支，表示已经合并到了当前分支，可以删除掉
+
+git branch --no-merged
+```
+
+当尝试通过正常命令删除当前还未合并的分支的时候，会失败
+
+```bash
+git branch -d <branch_name>
+# 失败
+
+# 可以强制删除
+git branch -D <branch_name>
+```
+
+> 可以通过`git branch --no-merged <branch_name>`不用检出对应的分支，来查看未合并到这个分支的分支；
+
+### 远程分支
+
+远程引用是对远程仓库的引用（指针），包括分支、标签；
+
+它们以`<remote>/<branch>`的名字出现；
+
+> `origin`并无特殊意义，他和`master`一样，是一个默认的远程仓库名字
+
+通过以下命令与远程仓库同步数据
+
+```bash
+git fetch <remote> 
+# 从中抓取本地没有数据，并更新至本地，移动 origin/master指针到最新的位置
+```
+
+通过以下命令添加新的远程服务器
+
+```bash
+git remote add <origin_name> <url>
+```
+
+通过以下数据推送给远程仓库
+
+```bash
+git push <remote> <branch>
+```
+
+当远程仓库被他人添加一个新的分支的时候，`git fetch`并不会在本地添加一份可以编辑的文件，它只会在本地创建一个不可以修改的指向`origin/branch`的指针；
+
+可以通过以下命令将其合并到本地的分支；
+
+```bash
+git merge <remote>/<branch>
+```
+
+也可以通过以下命令，将其在本地的对应的分支上工作
+
+```bash
+git checkout -b <branch_name> <remote>/<branch>
+```
+
+### 跟踪分支
+
+从一个远程跟踪检出一个本地分支会自动创建一个`跟踪分支`（他的上游叫上游分支）；
+
+跟踪分支是和远程分支有直接关系的本地分支，如果在跟踪分支上`git pull`，git会自动识别到那个服务器上去抓取、合并到哪个分支；
+
+通过以下命令，可以创建一个跟踪远程仓库的分支；
+
+```bash
+git checkout --track <remote>/<branch>
+
+git checkout -b <local_branch> <remote>/<branch>
+# 跟踪分支，并重新命令
+```
+
+通过以下命令更新所有远程仓库
+
+```bash
+git fetch --all
+```
+
+> `git fetch`并不会修改动作目录中的文件，它只会获取数据，然后让你手工进行合并；
+
+### 删除远程分支
+
+可以通过以下命令删除远程分支
+
+```bash
+git pull <remote> --delete <branch>
+
+# 这个命令做的只是从服务器上移除这个指针。 git服务器通常会保留数据一段时间直到垃圾回收运行，所以如果不小心删除掉了，通常是很容易恢复的
+```
+
+### 变基
+
+在git中整合不同分支的修改，主要有有两种方法`merge` 和`rebase`；
+
+通过以下命令进行变基
+
+```bash
+git checkout <brand_a>
+git rebase <brand>
+# 此刻会把 brand_a 中的差异化修改移动到 brand 分支之后，变成一条直线
+
+git checkout <brand>
+git merge <brand_a>
+# 合并之后，brand 分支就是合并了 brand_a 差异的一条完整的直线的分支了
+```
+
+多分支也可以变基，他的操作如下
+
+```bash
+git rebase --onto <brand_a> <brand_b> <brand_c>
+# 通过以上操作，将 brand_c 变基到了 brand_a 上
+
+git checkout <brand_a>
+git merge <brand_c>
+```
+
+变基也存在风险，**如果提交存在于你的仓库之外，而别人可能基于这些提交进行开发，那么不要执行变基**
+
+变基的实质是丢弃一些现有的提交，然后相应的一些其他的提交；
