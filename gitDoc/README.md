@@ -1,2 +1,0 @@
-# Git
- doc of git
