@@ -266,24 +266,206 @@ git log
 > 替换提交
 
 ```bash
-git add file
+git add <file>
 git commit -m 'msg'
 
 # 修改操作
 
-git add file
+git add <file>
 git commit --amend -m 'msg'  # 此时该提交会替代第一次提交 
 ```
 
 > 取消暂存
 
 ```bash
-git reset HEAD file # 取消对于file的暂存
+git reset HEAD <file> # 取消对于file的暂存
 ```
 
 > 撤销修改
 
 ```bash
-git checkout -- file # 还原至上一次提交的样子（有风险）
+git checkout -- <file> # 还原至上一次提交的样子（有风险）
 ```
+
+
+
+## 远程仓库
+
+### 查看远程仓库
+
+可以通过如下命令查看远程仓库
+
+```bash
+git remote
+
+git remote -v # 显示需要读写的git远程仓库的简写及其url
+```
+
+### 添加远程仓库
+
+可以通过如下命令添加远程仓库，并为其添加简写昵称
+
+```bash
+git remote add <short_name> <url>
+```
+
+添加完远程仓库后，就可以添加远程仓库中有，但是本地仓库没有的数据
+
+```bash
+git fetch short_name
+```
+
+### 从远程仓库中抓取与拉取
+
+当使用`git fetch`命令后，只会将数据下载到本地，但是不会自动合并或修改本地原有的数据，需要手动进行合并；
+
+如果当前分支设置了跟踪远程分支，那么可以使用`git pull`来自动抓取后，合并远程分支到当前分支；
+
+默认情况下，`git clone`命令会自动设置本地master分支跟踪克隆的远程仓库的master分支（或者其他名字的默认分支）；
+
+### 推送到远程仓库
+
+可以通过以下命令将本地分支推送到远程仓库
+
+```bash
+git push <remote> <branch>
+# git push origin master 
+# git clone 的时候，就默认帮设置好了origin的地址，和本地的master名称
+```
+
+只有当具有远程仓库的写权限，并且没有人在你提交之前提交时，该命令才会生效，不然会阻塞你的提交；
+
+### 远程仓库的重命名与删除
+
+可以通过如下命令对远程仓库的简写进行重命名，重命名后原本跟踪的对应的远程仓库的简写也会同时修改
+
+```bash
+git remote rename old_nanme new_name
+```
+
+可以通过如下命令，删除远程仓库的引用
+
+```bash
+git remote rm <remote_name>
+```
+
+
+
+## 打标签
+
+### 显示标签
+
+可以通过如下命令显示当前的标签
+
+```bash
+git tag
+```
+
+​	如果需要对标签进行筛选，可以通过如下命令
+
+```bash
+git tag -l 'msg' # msg为glob匹配
+```
+
+### 创建标签
+
+标签分为：轻量标签、附注标签；
+
+轻量标签是对某一次特定提交的引用；
+
+附注标签是存储在git数据库中的一个完整对象，是可以被校验的；
+
+### 附注标签
+
+可以通过如下命令创建附注标签
+
+```bash
+git tag -a <tag_name> -m 'tag_msg'
+# -a:标签名称 -m:标签备注
+```
+
+通过如下命令可以查看标签信息与其提交信息
+
+```bash
+git show <tag_name>
+```
+
+### 轻量标签
+
+轻量标签本质上是将提交校验和存储到一个文件中：没有保存 任何其他信息
+
+创建轻量标签很简单，不需要传入额外参数
+
+```bash
+git tag <tag_name>
+```
+
+### 后期打标
+
+如果对于前期的提交忘记打标，可以通过如下命令进行操作
+
+```bash
+git tag -a <tag_name> git_version
+```
+
+### 共享标签
+
+默认情况下`git push`命令不会将本地的标签传送到远程服务器上，在创建完标签之后必须显示的推送标签到远程服务器上；
+
+```bash
+git push origin <tag_name>
+```
+
+如果要一次推送很多标签，可以使用`--tags`选项的`git push`，这样会把所有不在远程服务器上的标签全部推送到那里；
+
+```bash
+git push origin --tags
+```
+
+> `git push --tags`不会区分轻量标签和附注标签，也没有方法可以只推送一种标签；
+
+### 删除标签
+
+要删除本地仓库的标签，可以使用如下命令
+
+```bash
+git tag -d <tag_name>
+```
+
+要删除远程仓库的标签，可以通过如下命令
+
+```bash
+git push origin --delete <tag_name>
+```
+
+### 检出标签
+
+如果像看查某个标签指向的文件版本，可以通过如下命令
+
+```bash
+git checkout <tag_name>
+# 会使得仓库处于:分离头指针，后续提交不属于任何分支（高风险）
+```
+
+通过检出的时候同时创建一个新的分支，可以解决以上问题
+
+```bash
+git checkout -b <branch_name> <tag_name>
+# 如果在这之后提交，可以通过 <branch_name>分支进行跟踪
+```
+
+
+
+## Git别名
+
+可以通过如下命令，给git命令添加别名（修改config文件）
+
+```bash
+git config --global alias.<new_name> '<git_command>'
+# 通过以上命令，将可以使得 <new_name> 替代 原有的<git_command>
+```
+
+
+
+## Git分支
 
